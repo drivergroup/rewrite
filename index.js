@@ -117,6 +117,11 @@ function proxyRequest (route, mw) {
         ctx.status = response.res.statusCode
         ctx.body = response.data
         ctx.set(response.res.headers)
+        // read-stream-all already concatenated all the chunks
+        // sending this header breaks proxies that check for RFC compliance
+        if ( ctx.response.get('transfer-encoding' ) === 'chunked' ) {
+          ctx.remove('transfer-encoding')
+        }
 
         const viewResponse = Object.assign({}, response)
         if (typeof viewResponse.data === 'string' || Buffer.isBuffer(viewResponse.data)) {
