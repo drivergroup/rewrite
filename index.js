@@ -123,18 +123,10 @@ function proxyRequest (route, mw) {
           ctx.remove('transfer-encoding')
         }
 
-        const viewResponse = Object.assign({}, response)
-        if (typeof viewResponse.data === 'string' || Buffer.isBuffer(viewResponse.data)) {
-          viewResponse.data = viewResponse.data.toString()
-          /* if JSON was returned, parse it */
-          try {
-            viewResponse.data = JSON.parse(viewResponse.data)
-          } catch (err) {}
-        }
         mw.emit('verbose', 'middleware.rewrite.proxy.response', {
           rewriteId: ctx.state.id,
-          res: viewResponse.res,
-          data: viewResponse.data
+          res: response.res,
+          data: response.data
         })
         resolve()
       } catch (err) {
